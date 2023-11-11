@@ -14,35 +14,35 @@ int main()
 {
     const int width = 120, height = 30;
 
-    wchar_t screen[width * height + 1] = {0};
+    wchar_t screen[width * height + 1] = { 0 };
     const float screenAspect = float(width / height), pixelAspect = 11.0 / 24.0;
     const char gradient[20] = ".:!/r(l1Z4H9W8$@";
 
 
-    
+
     HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
     SetConsoleActiveScreenBuffer(hConsole);
 
     DWORD dwBytesWritten = 0;
-    
+
     std::vector<object*> objects;
     objects.push_back(new sphere(0, -4, 0, 2));
     objects.push_back(new sphere(0, -20, 0, 5));
     objects.push_back(new sphere(0, 0, 10, 3));
     objects.push_back(new sphere(7, 5, 0, 2.5f));
     objects.push_back(new plane({ 0, 0, -2 }, { 0, 0, 1 }));
-    objects.push_back(new plane({10, 0, 0}, {-1, 0, 0}));
-    
+    objects.push_back(new plane({ 10, 0, 0 }, { -1, 0, 0 }));
+
     Vector3f cameraPos(0, 0, 0), cameraDir(0, 0, 0);
 
     float dist = 0, min_dist = 100; int objNum = 0;;
     std::wstring str = L"fps:";
     int fps = 0, tempframe = 0;
 
-    for (size_t frame = 0; frame < 100000; frame++, tempframe++){
+    for (size_t frame = 0; frame < 100000; frame++, tempframe++) {
 
-        for (size_t i = 0; i < width; i++){
-            for (size_t j = 0; j < height; j++){
+        for (size_t i = 0; i < width; i++) {
+            for (size_t j = 0; j < height; j++) {
 
                 float x = float(i) / width * 2.0f - 1.0f;
                 float y = float(j) / height * 2.0f - 1.0f;
@@ -69,9 +69,9 @@ int main()
                 screen[i + j * width] = pixel;
             }
         }
-        objects[0]->Center.x = 2*sin(frame / 300.0);
-        objects[1]->Center.z = 2*sin(frame / 300.0);
-        if (_kbhit()) 
+        objects[0]->Center.x = 2 * sin(frame / 300.0);
+        objects[1]->Center.z = 2 * sin(frame / 300.0);
+        if (_kbhit())
             switch (_getch())
             {
             case 'w':
@@ -112,26 +112,24 @@ int main()
                 break;
             }
         if (clock() % CLOCKS_PER_SEC < 10 && tempframe>200) {
-            str = L"fps: " + std::to_wstring(tempframe)+L", frame: " + std::to_wstring(frame)
-                + L", time: " + std::to_wstring(clock()/CLOCKS_PER_SEC)
-                + L", camera pos: {x=" + std::to_wstring(cameraPos.x) + L";y=" + std::to_wstring(cameraPos.y)
-                + L";z=" + std::to_wstring(cameraPos.z) +L"}";
+            
+            str = L"Fps:" + std::to_wstring(tempframe) + L" frame:" + std::to_wstring(frame)
+                + L" time:" + std::to_wstring(clock() / CLOCKS_PER_SEC)
+                + L" camPos:{x=" + std::to_wstring(cameraPos.x) + L";y=" + std::to_wstring(cameraPos.y)
+                + L";z=" + std::to_wstring(cameraPos.z) + L"}"
+                + L" camDir:{x=" + std::to_wstring(cameraDir.x) + L";y=" + std::to_wstring(cameraDir.y)+ L"}";;
             tempframe = 0;
         }
-        
+
         for (int i = 0; i < str.size(); i++)
             screen[i] = str[i];
-        
+
         //camera.y = camera.y - 0.00005f;
         //camera.z = camera.z + 0.0005f;
 
         screen[width * height] = '\0';
         WriteConsoleOutputCharacterW(hConsole, screen, width * height, { 0, 0 }, &dwBytesWritten);
 
-
     }
-
-
-
 
 }
